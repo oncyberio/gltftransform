@@ -1,0 +1,85 @@
+name: build
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  #############################################################################
+  # NODE
+  node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x, 18.x]
+    env:
+      CI: true
+    steps:
+    # Setup.
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: yarn
+
+    # Build.
+    - run: yarn install --frozen-lockfile
+    - run: yarn dist
+
+    # Test.
+    - run: yarn test --no-worker-threads # https://github.com/avajs/ava/discussions/3158
+    - run: yarn lint
+
+  #############################################################################
+  # DENO
+  deno:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      NODE_VERSION: 18.x
+    steps:
+    # Setup.
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: yarn
+
+    # Build.
+    - run: yarn install --frozen-lockfile
+    - run: yarn dist
+
+    # Test.
+    - run: deno test --allow-read --config test/deno.json test/deno.test.ts
+
+  #############################################################################
+  # COVERAGE
+  coverage:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      NODE_VERSION: 18.x
+    steps:
+    # Setup.
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: yarn
+
+    # Build.
+    - run: yarn install --frozen-lockfile
+    - run: yarn dist
+
+    # Coverage.
+    - run: yarn coverage --no-worker-threads # https://github.com/avajs/ava/discussions/3158
+    - run: yarn coverage:report
+    - uses: codecov/codecov-action@v3
+      with:
+        files: coverage/coverage.lcov

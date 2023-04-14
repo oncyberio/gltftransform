@@ -1,0 +1,56 @@
+{
+	"name": "@gltf-transform/functions",
+	"version": "3.2.0",
+	"repository": "github:donmccurdy/glTF-Transform",
+	"homepage": "https://gltf-transform.donmccurdy.com/functions.html",
+	"description": "Functions for common glTF modifications, written using the core API",
+	"author": "Don McCurdy <dm@donmccurdy.com>",
+	"license": "MIT",
+	"type": "module",
+	"sideEffects": false,
+	"exports": {
+		"types": "./dist/index.d.ts",
+		"require": "./dist/functions.cjs",
+		"default": "./dist/functions.modern.js"
+	},
+	"types": "./dist/index.d.ts",
+	"main": "./dist/functions.cjs",
+	"module": "./dist/functions.modern.js",
+	"source": "./src/index.ts",
+	"browserslist": [
+		"defaults",
+		"not IE 11",
+		"node >= 14"
+	],
+	"scripts": {
+		"dist": "microbundle --format modern,cjs",
+		"watch": "microbundle watch --format modern,cjs",
+		"watch:debug": "microbundle watch --format modern,cjs --no-compress"
+	},
+	"keywords": [
+		"gltf",
+		"3d",
+		"model",
+		"webgl",
+		"threejs"
+	],
+	"dependencies": {
+		"@gltf-transform/core": "^3.2.0",
+		"@gltf-transform/extensions": "^3.2.0",
+		"ktx-parse": "^0.5.0",
+		"ndarray": "^1.0.19",
+		"ndarray-lanczos": "^0.3.0",
+		"ndarray-pixels": "^2.0.0"
+	},
+	"files": [
+		"dist/",
+		"src/",
+		"README.md",
+		"package.json",
+		"package-lock.json"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"gitHead": "14f86ae6829e2e79d28589fa4f3d5730ebca982c"
+}

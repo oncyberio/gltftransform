@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js"></script>
+<style>
+	html,
+	body {
+		margin: 0;
+	}
+	header {
+		width: 630px;
+		margin: 30px auto;
+	}
+	h1 {
+		font-family: Roboto;
+		font-weight: 400;
+		text-align: center;
+	}
+	.container {
+		width: 630px;
+		margin: 30px auto;
+	}
+	model-viewer {
+		width: 300px;
+		height: 300px;
+		border: 1px dashed #ccc;
+	}
+	figure {
+		position: relative;
+		display: grid;
+		grid-template-columns: 300px 300px;
+		grid-auto-rows: 300px;
+		grid-gap: 30px;
+		width: 630px;
+	}
+	figcaption {
+		position: absolute;
+		top: calc(50% - 0.5em);
+		left: calc(100% + 30px);
+		font-style: italic;
+		font-family: monospace;
+	}
+</style>
+<header>
+	<h1>Round trip tests</h1>
+</header>
+<main class="container"></main>
+<script>
+	/**
+	 * Generates side-by-side <model-viewer/> comparisons for each of the
+	 * supported sample models.
+	 */
+
+	const containerEl = document.querySelector('.container');
+	fetch('./out/model-index.json')
+		.then((response) => response.json())
+		.then((index) => {
+			index.forEach((asset) => {
+				Object.entries(asset.variants).forEach(([variant, filename]) => {
+					const rowEl = document.createElement('figure');
+					containerEl.appendChild(rowEl);
+
+					const el = document.createElement('model-viewer');
+
+					el.setAttribute('src', `./out/${suffix(filename, '_')}`);
+					el.setAttribute('autoplay', '');
+					el.alt = el.title = `${asset.name} / ${variant} / ${filename}`;
+					rowEl.appendChild(el.cloneNode());
+
+					el.setAttribute('src', `./out/${suffix(filename, 'optimized')}`);
+					el.alt = el.title = `${asset.name} / ${variant} / ${filename}`;
+					rowEl.appendChild(el);
+
+					const labelEl = document.createElement('figcaption');
+					labelEl.textContent = asset.name;
+					rowEl.appendChild(labelEl);
+				});
+			});
+		});
+
+	function suffix(path, suffix) {
+		return path.replace('.glb', `.${suffix}.glb`);
+	}
+</script>

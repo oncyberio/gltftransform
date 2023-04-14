@@ -1,0 +1,25 @@
+# yarn
+node_modules
+.yarn
+.yarnrc
+
+# debug
+*.log
+
+# editor
+.vscode
+
+# test data
+**/out/*
+!**/out/.gitkeep
+
+# build artifacts
+packages/**/dist/*
+packages/**/.rts2*
+
+# documentation
+.vercel
+docs/dist/**
+
+# coverage
+coverage

@@ -1,0 +1,10 @@
+packages/cli/src/cli.ts
+**/dist
+**/in
+**/out
+**/*.md
+**/*.hbs
+**/*.json
+**/*.yml
+**/*.lock
+**/*.css

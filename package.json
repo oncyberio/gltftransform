@@ -1,0 +1,68 @@
+{
+  "private": true,
+  "name": "gltf-transform",
+  "author": "Don McCurdy <dm@donmccurdy.com>",
+  "repository": "github:donmccurdy/glTF-Transform",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dist": "lerna run dist",
+    "watch": "lerna run watch --parallel --stream",
+    "watch:debug": "lerna run watch:debug --parallel --stream",
+    "clean:dist": "rm -rf packages/*/dist/**",
+    "clean:deps": "rm -rf packages/*/node_modules/**",
+    "test": "ava packages/{core,extensions,functions,cli}/test/**/*.test.ts",
+    "coverage": "c8 --reporter=lcov --reporter=text yarn test --tap",
+    "coverage:report": "c8 report --reporter=text-lcov > coverage/coverage.lcov",
+    "lint": "eslint \"packages/*/{src,test}/**/*.ts\"",
+    "validate": "scripts/validate.js",
+    "preversion": "yarn run test",
+    "version": "yarn clean:dist && lerna run dist && gltf-transform -h > docs/CLI_HELP.md && git add -u docs",
+    "postpublish": "git push && git push --tags && yarn run docs:deploy",
+    "docs": "typedoc packages/core/src/core.ts packages/extensions/src/extensions.ts packages/functions/src/index.ts docs/pages.ts --out docs/dist/ --name glTF-Transform --excludeInternal --excludeNotDocumented --theme docs/theme --media docs/media --readme docs/INDEX.md --includes docs --tsconfig docs/tsconfig.json",
+    "docs:watch": "concurrently \"yarn docs --watch\" \"vercel dev\"",
+    "docs:deploy": "yarn docs && vercel --prod"
+  },
+  "devDependencies": {
+    "@types/command-exists": "1.2.0",
+    "@types/draco3dgltf": "1.4.0",
+    "@types/ndarray": "1.0.11",
+    "@types/node": "18.15.11",
+    "@types/node-gzip": "1.1.0",
+    "@types/sharp": "^0.31.1",
+    "@typescript-eslint/eslint-plugin": "5.57.0",
+    "@typescript-eslint/parser": "5.57.0",
+    "ava": "^5.2.0",
+    "c8": "^7.13.0",
+    "canvas": "2.11.2",
+    "concurrently": "7.6.0",
+    "draco3dgltf": "1.5.6",
+    "eslint": "8.37.0",
+    "eslint-config-prettier": "8.8.0",
+    "gl-matrix": "^3.4.3",
+    "gltf-validator": "2.0.0-dev.3.9",
+    "lerna": "6.6.1",
+    "meshoptimizer": "0.18.1",
+    "microbundle": "0.15.1",
+    "mikktspace": "1.1.1",
+    "prettier": "2.8.7",
+    "source-map-support": "0.5.21",
+    "suppress-experimental-warnings": "^1.1.4",
+    "ts-node": "10.9.1",
+    "typedoc": "0.21.2",
+    "typescript": "4.9.5"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=ts-node/esm",
+      "--require=suppress-experimental-warnings"
+    ]
+  },
+  "dependencies": {}
+}
